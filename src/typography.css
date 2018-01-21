@@ -1,0 +1,22 @@
+@import url('https://fonts.googleapis.com/css?family=Pacifico');
+@import url('https://fonts.googleapis.com/css?family=Roboto:300,400');
+body {
+    font-family: 'Roboto', sans-serif;
+}
+.pacifico {
+    font-family: 'Pacifico', cursive;
+}
+.roboto {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 400;
+}
+.roboto300 {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 300;
+}
+.gray {
+    color: #484848;
+}
+.darkgray {
+    color: #272727;
+}

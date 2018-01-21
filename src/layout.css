@@ -1,0 +1,37 @@
+#root {
+    display: grid;
+    grid-template-columns: 100%;
+    grid-template-rows: 4rem auto 1fr 4rem;
+    grid-template-areas:
+            "header"
+            "main"
+            "aside"
+            "footer";
+}
+.header {
+    grid-area: header;
+}
+.main {
+    grid-area: main;
+    align-self: start;
+    padding: 1.5rem 0.75rem 1.5rem 1.5rem;
+}
+
+.aside {
+    grid-area: aside;
+    padding: 1.5rem 1.5rem 1.5rem 0.75rem;
+}
+.footer {
+    grid-area: footer;
+}
+
+@media (min-width: 45rem) {
+    #root {
+        grid-template-columns: 2fr 2fr;
+        grid-template-rows: 4rem auto 4rem;
+        grid-template-areas:
+                "header header"
+                "main aside"
+                "footer footer";
+    }
+}

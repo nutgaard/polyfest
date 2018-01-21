@@ -1,0 +1,54 @@
+.svgviewer {
+    position: relative;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.svgviewer__btn-group {
+    position: absolute;
+    z-index: 9990;
+    top: 0;
+    right: 0;
+}
+
+.svgviewer__btn {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-top: none;
+    border-right: none;
+    padding: .5rem .75rem;
+    cursor: pointer;
+}
+
+.svgviewer__btn:first-child {
+    border-radius: 0 0 0 4px;
+}
+
+.svgviewer__btn:last-child {
+    border-radius: 0 4px 0 0;
+}
+
+.svgviewer__btn:hover {
+    background-color: #ccc;
+}
+.svgviewer__btn:active {
+    background-color: #aaa;
+}
+
+.svgviewer__btn:disabled {
+    cursor: initial;
+    color: #bcbcbc;
+    background-color: #f1f1f1;
+}
+.leafletviewer {
+    position: relative;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 100%;
+    height: 100%;
+}
+.leaflet-container {
+    height: 100%;
+    width: 100%;
+}

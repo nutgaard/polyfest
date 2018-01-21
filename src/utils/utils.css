@@ -1,0 +1,13 @@
+.center-vertical {
+    display: flex;
+    align-items: center;
+}
+.space-l {
+    margin-bottom: 3rem;
+}
+.space-m {
+    margin-bottom: 2rem;
+}
+.space-s {
+    margin-bottom: 1rem;
+}
