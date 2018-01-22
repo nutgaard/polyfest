@@ -1,6 +1,6 @@
-import { JsonFeature } from '../domain';
+import { Feature } from '../domain';
 
 export interface PolygonOperations {
-    union(feature1: JsonFeature, feature2: JsonFeature): JsonFeature[];
-    intersect(feature1: JsonFeature, feature2: JsonFeature): JsonFeature[];
+    union(feature1: Feature, feature2: Feature): Feature[];
+    intersect(feature1: Feature, feature2: Feature): Feature[];
 }

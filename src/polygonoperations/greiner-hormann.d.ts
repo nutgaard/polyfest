@@ -1,6 +1,6 @@
-declare module "greiner-hormann" {
-    type Polygon = number[][];
+import { Coordinate } from '../domain';
 
-    export function intersection(subject: Polygon, clip: Polygon): Polygon[];
-    export function union(subject: Polygon, clip: Polygon): Polygon[];
+declare module "greiner-hormann" {
+    export function intersection(subject: Coordinate[], clip: Coordinate[]): Coordinate[][];
+    export function union(subject: Coordinate[], clip: Coordinate[]): Coordinate[][];
 }

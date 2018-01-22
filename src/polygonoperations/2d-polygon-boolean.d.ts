@@ -1,5 +1,6 @@
-declare module "2d-polygon-boolean" {
-    type Polygon = number[][];
+declare module '2d-polygon-boolean' {
+    export type Coordinate = GeoJSON.Position;
     type Operation = 'and' | 'or' | 'not';
-    export default function polygonBoolean(subject: Polygon, clip: Polygon, operation: Operation): Polygon[];
+    export default function polygonBoolean(subject: Coordinate[], clip: Coordinate[], operation: Operation): Coordinate[][];
 }
+

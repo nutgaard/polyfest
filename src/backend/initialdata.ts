@@ -1,6 +1,6 @@
-import { JsonFeatureCollection } from '../domain';
+import { FeatureCollection } from '../domain';
 
-const data: JsonFeatureCollection = {
+const data: FeatureCollection = {
     'type': 'FeatureCollection',
     'features': [
         {

@@ -1,12 +1,16 @@
 import polygonBoolean, { Operation } from '2d-polygon-boolean';
 import { PolygonOperations } from './polygonoperation';
-import { Geometry, JsonFeature } from '../domain';
+import { Feature, Geometry } from '../domain';
 
-function convertToArray(feature: JsonFeature): number[][] {
-    return feature.geometry.coordinates[0];
+function convertToArray(feature: Feature): number[][] {
+    const geometry: Geometry | null = feature.geometry;
+    if (geometry === null) {
+        return [];
+    }
+    return geometry.coordinates[0];
 }
 
-function toFeature(poly: number[][]): JsonFeature {
+function toFeature(poly: number[][]): Feature {
     const geometry: Geometry = {
         type: 'Polygon',
         coordinates: [poly]
@@ -18,7 +22,7 @@ function toFeature(poly: number[][]): JsonFeature {
     };
 }
 
-function exec(subject: JsonFeature, clip: JsonFeature, operation: Operation): JsonFeature[] {
+function exec(subject: Feature, clip: Feature, operation: Operation): Feature[] {
     try {
         const subjectArray = convertToArray(subject);
         const clipArray = convertToArray(clip);
@@ -26,16 +30,16 @@ function exec(subject: JsonFeature, clip: JsonFeature, operation: Operation): Js
         console.log('result', result); // tslint:disable-line
         return result.map((poly) => toFeature(poly));
     } catch (e) {
-        return [ subject, clip ];
+        return [subject, clip];
     }
 }
 
 class PolygonJsImpl implements PolygonOperations {
-    union(subject: JsonFeature, clip: JsonFeature): JsonFeature[] {
+    union(subject: Feature, clip: Feature): Feature[] {
         return exec(subject, clip, 'or');
     }
 
-    intersect(subject: JsonFeature, clip: JsonFeature): JsonFeature[] {
+    intersect(subject: Feature, clip: Feature): Feature[] {
         return exec(subject, clip, 'and');
     }
 }

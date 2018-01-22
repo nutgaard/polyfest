@@ -6,11 +6,11 @@ import Aside from './components/aside';
 import Footer from './components/footer';
 import Fragment from './components/fragment';
 import { fetchPolygons, intersectionOfPolygons, unionOfPolygons } from './api';
-import { Feature, FeatureCollection, JsonFeature, JsonFeatureCollection } from './domain';
 import SvgViewer from './viewer/svgviewer';
 import createColorScheme from './utils/color';
 import { numberOfSelectedPolygons, selectedPolygonIds } from './utils/domainutils';
 import LeafletViewer from './viewer/leafletviewer';
+import { Feature, FeatureCollection, FeatureProperties } from './domain';
 
 interface State {
     featureCollection: FeatureCollection | null;
@@ -37,10 +37,11 @@ class App extends React.Component<{}, State> {
                 if (feature.id !== featureId) {
                     return feature;
                 }
-                if (!feature.isSelected && selectedCount === 2) {
+                const properties: FeatureProperties = feature.properties || { isSelected: false, color: Color.rgb(0) };
+                if (!properties.isSelected && selectedCount === 2) {
                     return feature;
                 }
-                return { ...feature, isSelected: !feature.isSelected };
+                return { ...feature, properties: { ...properties, isSelected: !properties.isSelected} };
             });
 
         const newFeatureCollection: FeatureCollection = { ...safeFeatureCollection, features };
@@ -56,8 +57,8 @@ class App extends React.Component<{}, State> {
         intersectionOfPolygons(featureIds[0], featureIds[1]).then(this.processState);
     }
 
-    processState = (jsonFeatureCollection: JsonFeatureCollection) => {
-        const jsonFeatures: JsonFeature[] = jsonFeatureCollection.features;
+    processState = (jsonFeatureCollection: FeatureCollection) => {
+        const jsonFeatures: Feature[] = jsonFeatureCollection.features;
 
         const colors: Color[] = createColorScheme(jsonFeatures.length);
 
@@ -65,8 +66,10 @@ class App extends React.Component<{}, State> {
             .map((feature, index) => ({
                 ...feature,
                 id: generateId(index),
-                isSelected: false,
-                color: colors[index]
+                properties: {
+                    isSelected: false,
+                    color: colors[index]
+                }
             }));
         const featureCollection: FeatureCollection = { ...jsonFeatureCollection, features };
 

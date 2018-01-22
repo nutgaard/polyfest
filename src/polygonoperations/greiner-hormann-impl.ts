@@ -1,6 +1,6 @@
 import * as greinerHormann from 'greiner-hormann';
 import { PolygonOperations } from './polygonoperation';
-import { Geometry, JsonFeature } from '../domain';
+import { Feature, Geometry } from '../domain';
 import { Operation } from '2d-polygon-boolean';
 
 function isSelfclosing(numbers: number[][]): boolean {
@@ -10,8 +10,12 @@ function isSelfclosing(numbers: number[][]): boolean {
     return first[0] === last[0] && first[1] === last[1];
 }
 
-function convertToArray(feature: JsonFeature): number[][] {
-    const coordinates = feature.geometry.coordinates[0];
+function convertToArray(feature: Feature): number[][] {
+    const geometry: Geometry | null = feature.geometry;
+    if (geometry === null) {
+        return [];
+    }
+    const coordinates = geometry.coordinates[0];
     if (isSelfclosing(coordinates)) {
         return coordinates.slice(0, -1);
     } else {
@@ -19,7 +23,7 @@ function convertToArray(feature: JsonFeature): number[][] {
     }
 }
 
-function toFeature(poly: number[][]): JsonFeature {
+function toFeature(poly: number[][]): Feature {
     if (!isSelfclosing(poly)) {
         poly.push(poly[0]);
     }
@@ -36,7 +40,7 @@ function toFeature(poly: number[][]): JsonFeature {
     };
 }
 
-function exec(subject: JsonFeature, clip: JsonFeature, operation: Operation): JsonFeature[] {
+function exec(subject: Feature, clip: Feature, operation: Operation): Feature[] {
     try {
         const subjectArray = convertToArray(subject);
         const clipArray = convertToArray(clip);
@@ -56,11 +60,11 @@ function exec(subject: JsonFeature, clip: JsonFeature, operation: Operation): Js
 }
 
 class GreinerHormannImpl implements PolygonOperations {
-    union(subject: JsonFeature, clip: JsonFeature): JsonFeature[] {
+    union(subject: Feature, clip: Feature): Feature[] {
         return exec(subject, clip, 'or');
     }
 
-    intersect(subject: JsonFeature, clip: JsonFeature): JsonFeature[] {
+    intersect(subject: Feature, clip: Feature): Feature[] {
         return exec(subject, clip, 'and');
     }
 }

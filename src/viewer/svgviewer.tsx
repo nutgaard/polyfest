@@ -22,7 +22,7 @@ class SvgViewer extends React.Component<SvgViewerProps, {}> {
         const { featureCollection } = nextProps;
         if (featureCollection !== null && this.viewbox === null) {
             const coordinates: Coordinate[] = featureCollection.features
-                .map((feature) => feature.geometry.coordinates[0])
+                .map((feature) => feature.geometry ? feature.geometry.coordinates[0] : [])
                 .reduce((list, element) => [...list, ...element], []);
 
             const viewbox: SvgViewbox = findViewbox(coordinates);

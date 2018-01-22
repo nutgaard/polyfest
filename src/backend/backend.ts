@@ -1,4 +1,4 @@
-import { JsonFeature, JsonFeatureCollection } from '../domain';
+import { Feature, FeatureCollection } from '../domain';
 import ParsedStorage from '../utils/parsedstorage';
 import { PolygonOperations } from '../polygonoperations/polygonoperation';
 import initialData from './initialdata';
@@ -12,25 +12,25 @@ class Backend {
         this.operations = operations;
     }
 
-    getAll(): JsonFeatureCollection {
-        return this.storage.get() as JsonFeatureCollection || initialData;
+    getAll(): FeatureCollection {
+        return this.storage.get() as FeatureCollection || initialData;
     }
 
-    _exec(subjectId: string, clipId: string, operation: (subject: JsonFeature, clip: JsonFeature) => JsonFeature[]) {
+    _exec(subjectId: string, clipId: string, operation: (subject: Feature, clip: Feature) => Feature[]) {
         const subjectIndex: number = parseInt(subjectId, 10);
         const clipIndex: number = parseInt(clipId, 10);
 
         const data = this.getAll();
-        const subject: JsonFeature = data.features[subjectId];
-        const clip: JsonFeature = data.features[clipId];
+        const subject: Feature = data.features[subjectId];
+        const clip: Feature = data.features[clipId];
 
-        const unionFeature: JsonFeature[] = operation(subject, clip);
+        const unionFeature: Feature[] = operation(subject, clip);
 
-        const unchangedFeatures: JsonFeature[] = data.features
+        const unchangedFeatures: Feature[] = data.features
             .filter((_, index) => index !== subjectIndex && index !== clipIndex);
 
-        const newFeatures: JsonFeature[] = unchangedFeatures.concat(unionFeature);
-        const newCollection: JsonFeatureCollection = {
+        const newFeatures: Feature[] = unchangedFeatures.concat(unionFeature);
+        const newCollection: FeatureCollection = {
             ...data,
             features: newFeatures
         };
@@ -40,13 +40,13 @@ class Backend {
         return newCollection;
     }
 
-    union(subjectId: string, clipId: string): JsonFeatureCollection {
-        const operation = (subject: JsonFeature, clip: JsonFeature) => this.operations.union(subject, clip);
+    union(subjectId: string, clipId: string): FeatureCollection {
+        const operation = (subject: Feature, clip: Feature) => this.operations.union(subject, clip);
         return this._exec(subjectId, clipId, operation);
     }
 
-    intersect(subjectId: string, clipId: string): JsonFeatureCollection {
-        const operation = (subject: JsonFeature, clip: JsonFeature) => this.operations.intersect(subject, clip);
+    intersect(subjectId: string, clipId: string): FeatureCollection {
+        const operation = (subject: Feature, clip: Feature) => this.operations.intersect(subject, clip);
         return this._exec(subjectId, clipId, operation);
     }
 }

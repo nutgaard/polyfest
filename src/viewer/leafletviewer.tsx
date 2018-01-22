@@ -16,6 +16,10 @@ type LeafletViewerProps = {
     }
 };
 
+function getFeatureColor(feature: Feature): string {
+    return feature.properties && feature.properties.color ? feature.properties.color.alpha(1).toString() : 'black';
+}
+
 class LeafletViewer extends React.Component<LeafletViewerProps, {}> {
     viewbox: SvgViewbox | null = null;
 
@@ -23,7 +27,7 @@ class LeafletViewer extends React.Component<LeafletViewerProps, {}> {
         const { featureCollection } = nextProps;
         if (featureCollection !== null && this.viewbox === null) {
             const coordinates: Coordinate[] = featureCollection.features
-                .map((feature) => feature.geometry.coordinates[0])
+                .map((feature) => feature.geometry ? feature.geometry.coordinates[0] : [])
                 .reduce((list, element) => [...list, ...element], []);
 
             const viewbox: SvgViewbox = findViewbox(coordinates);
@@ -40,8 +44,8 @@ class LeafletViewer extends React.Component<LeafletViewerProps, {}> {
     }
 
     style: StyleFunction<object> = (feature: Feature) => {
-        const color = feature.color.alpha(1).toString();
-        if (feature.isSelected) {
+        const color: string = getFeatureColor(feature);
+        if (feature.properties && feature.properties.isSelected) {
             return { fillColor: color, color: 'black' };
         } else {
             return { color };
