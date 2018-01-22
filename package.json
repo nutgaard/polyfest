@@ -5,9 +5,9 @@
   "homepage": "https://utgaard.xyz/polyfest",
   "scripts": {
     "start:backend": "nodemon --watch server server/server.js",
-    "dev:backend": "gulp watch",
-    "build:backend": "gulp",
+    "start:backendbuild": "gulp watch",
     "start:frontend": "react-scripts-ts start",
+    "build:backend": "gulp",
     "build:frontend": "react-scripts-ts build",
     "start": "npm-run-all -p start:*",
     "dev": "cross-env REACT_APP_MOCK=true REACT_APP_ENV=dev npm-run-all -p start:frontend",
