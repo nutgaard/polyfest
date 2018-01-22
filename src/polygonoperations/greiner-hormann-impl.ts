@@ -3,33 +3,32 @@ import { PolygonOperations } from './polygonoperation';
 import { Geometry, JsonFeature } from '../domain';
 import { Operation } from '2d-polygon-boolean';
 
-function convertToArray(feature: JsonFeature): number[][] {
-    let coordinates = feature.geometry.coordinates[0];
-    if (isSelfClosing(coordinates)) {
-        return coordinates.slice(0, -1);
-    }
-    return coordinates;
-}
-
-function isSelfClosing(numbers: number[][]): boolean {
+function isSelfclosing(numbers: number[][]): boolean {
     const first = numbers[0];
     const last = numbers[numbers.length - 1];
 
-    if (first[0] === last[0] && first[1] === last[1]) {
-        return true;
+    return first[0] === last[0] && first[1] === last[1];
+}
+
+function convertToArray(feature: JsonFeature): number[][] {
+    const coordinates = feature.geometry.coordinates[0];
+    if (isSelfclosing(coordinates)) {
+        return coordinates.slice(0, -1);
     } else {
-        return false;
+        return coordinates;
     }
 }
 
 function toFeature(poly: number[][]): JsonFeature {
-    if (!isSelfClosing(poly)) {
+    if (!isSelfclosing(poly)) {
         poly.push(poly[0]);
     }
+
     const geometry: Geometry = {
         type: 'Polygon',
         coordinates: [poly]
     };
+
     return {
         type: 'Feature',
         properties: {},
