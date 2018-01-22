@@ -5,12 +5,14 @@ import Main from './main';
 import Aside from './components/aside';
 import Footer from './components/footer';
 import Fragment from './components/fragment';
-import { fetchPolygons, intersectionOfPolygons, unionOfPolygons } from './api';
+import { fetchFeatureCollection, intersectionOfPolygons, unionOfPolygons, updateFeatureCollection } from './api';
 import SvgViewer from './viewer/svgviewer';
 import createColorScheme from './utils/color';
 import { numberOfSelectedPolygons, selectedPolygonIds } from './utils/domainutils';
 import LeafletViewer from './viewer/leafletviewer';
 import { Feature, FeatureCollection, FeatureProperties } from './domain';
+import { executeOperation, PolygonOperations } from './polygonoperations/polygonoperation';
+import GreinerHormannImpl from './polygonoperations/greiner-hormann-impl';
 
 interface State {
     featureCollection: FeatureCollection | null;
@@ -18,6 +20,19 @@ interface State {
 
 function generateId(index: number): string {
     return `${index}`;
+}
+
+const operations: PolygonOperations = new GreinerHormannImpl();
+
+function _execOperation(collection: FeatureCollection | null,
+                        operation: (subject: Feature, clip: Feature) => Feature[]): Promise<FeatureCollection> {
+    if (collection !== null) {
+        const featureIds: string[] = selectedPolygonIds(collection);
+        const newColl: FeatureCollection = executeOperation(collection, featureIds[0], featureIds[1], operation);
+
+        return updateFeatureCollection(newColl);
+    }
+    return Promise.reject(new Error('Cannot work with empty collection.'));
 }
 
 class App extends React.Component<{}, State> {
@@ -41,20 +56,31 @@ class App extends React.Component<{}, State> {
                 if (!properties.isSelected && selectedCount === 2) {
                     return feature;
                 }
-                return { ...feature, properties: { ...properties, isSelected: !properties.isSelected} };
+                return { ...feature, properties: { ...properties, isSelected: !properties.isSelected } };
             });
 
         const newFeatureCollection: FeatureCollection = { ...safeFeatureCollection, features };
         this.setState({ featureCollection: newFeatureCollection });
     }
 
-    union = () => {
+    unionSpecific = () => {
         const featureIds: string[] = selectedPolygonIds(this.state.featureCollection);
         unionOfPolygons(featureIds[0], featureIds[1]).then(this.processState);
     }
-    intersect = () => {
+
+    intersectSpecific = () => {
         const featureIds: string[] = selectedPolygonIds(this.state.featureCollection);
         intersectionOfPolygons(featureIds[0], featureIds[1]).then(this.processState);
+    }
+
+    union = () => {
+        const operation = (subject: Feature, clip: Feature) => operations.union(subject, clip);
+        _execOperation(this.state.featureCollection, operation).then(this.processState);
+    }
+
+    intersect = () => {
+        const operation = (subject: Feature, clip: Feature) => operations.intersect(subject, clip);
+        _execOperation(this.state.featureCollection, operation).then(this.processState);
     }
 
     processState = (jsonFeatureCollection: FeatureCollection) => {
@@ -77,7 +103,7 @@ class App extends React.Component<{}, State> {
     }
 
     componentDidMount() {
-        fetchPolygons().then(this.processState);
+        fetchFeatureCollection().then(this.processState);
     }
 
     render() {

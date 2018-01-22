@@ -3,6 +3,7 @@ import { respondWith } from './utils';
 import { contextroot } from './../api';
 import { createBrowserBackend } from '../backend/backend-factory';
 import Backend from '../backend/backend';
+import { FeatureCollection } from '../domain';
 
 const backend: Backend = createBrowserBackend();
 
@@ -17,6 +18,7 @@ type BodyParam = {
     subjectId: string;
     clipId: string;
 };
+type PutBodyParam = FeatureCollection;
 
 fetchMock.post(`${contextroot}/api/polygon/union`, respondWith((url, config, params) => {
     const bodyParam: BodyParam = params.bodyParams as BodyParam;
@@ -26,5 +28,9 @@ fetchMock.post(`${contextroot}/api/polygon/intersect`, respondWith((url, config,
     const bodyParam: BodyParam = params.bodyParams as BodyParam;
     return backend.intersect(bodyParam.subjectId, bodyParam.clipId);
 }));
-fetchMock.get(`${contextroot}/api/polygon`, respondWith((url, config, params) => backend.getAll()));
+fetchMock.get(`${contextroot}/api/polygon`, respondWith((url, config, params) => backend.get()));
+fetchMock.put(`${contextroot}/api/polygon`, respondWith((url, config, params) => {
+    const body: PutBodyParam = params.bodyParams as PutBodyParam;
+    return backend.update(body);
+}));
 fetchMock.mock('*', respondWith((url, config) => realFetch.call(window, url, config)));
