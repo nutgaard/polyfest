@@ -1,11 +1,11 @@
 import * as React from 'react';
-import { LatLngExpression } from 'leaflet';
-import { Map, Polygon, TileLayer } from 'react-leaflet';
+import { GeoJSON, Map, TileLayer } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
-import { Coordinate, FeatureCollection, SvgViewbox } from '../domain';
+import { Coordinate, Feature, FeatureCollection, SvgViewbox } from '../domain';
 import { findViewbox, paddViewbox } from './svgutils';
 import { numberOfSelectedPolygons } from '../utils/domainutils';
 import SvgButton from './svg-button';
+import { Layer, StyleFunction } from 'leaflet';
 
 type LeafletViewerProps = {
     featureCollection: FeatureCollection | null;
@@ -31,8 +31,25 @@ class LeafletViewer extends React.Component<LeafletViewerProps, {}> {
         }
     }
 
+    eachFeature = (feature: Feature, layer: Layer) => {
+        layer.on('click', () => {
+            if (feature.id) {
+                this.props.toggleFeatureSelection(feature.id as string);
+            }
+        });
+    }
+
+    style: StyleFunction<object> = (feature: Feature) => {
+        const color = feature.color.alpha(1).toString();
+        if (feature.isSelected) {
+            return { fillColor: color, color: 'black' };
+        } else {
+            return { color };
+        }
+    }
+
     render() {
-        const { featureCollection, toggleFeatureSelection, actions } = this.props;
+        const { featureCollection, actions } = this.props;
         if (featureCollection === null || this.viewbox === null) {
             return (
                 <svg viewBox="0 0 100 100">
@@ -41,22 +58,7 @@ class LeafletViewer extends React.Component<LeafletViewerProps, {}> {
             );
         }
 
-        // const selectedCount = numberOfSelectedPolygons(featureCollection);
         const random: string = ('' + Math.random());
-        const polylines = featureCollection.features.map((feature) => {
-            const positions = feature.geometry.coordinates[0]
-                .map((coordinate) => [coordinate[1], coordinate[0]]) as LatLngExpression[];
-
-            const color = feature.color.alpha(1).toString();
-            const key = `${random}-${feature.id}`;
-            const onclick = () => toggleFeatureSelection(feature.id);
-            if (feature.isSelected) {
-                return (<Polygon key={key} fillColor={color} color="black" positions={positions} onclick={onclick}/>);
-            } else {
-                return (<Polygon key={key} color={color} positions={positions} onclick={onclick}/>);
-            }
-
-        });
 
         const position: [number, number] = [
             this.viewbox.miny + this.viewbox.height / 2,
@@ -71,7 +73,12 @@ class LeafletViewer extends React.Component<LeafletViewerProps, {}> {
                         attribution="OSM"
                         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     />
-                    {polylines}
+                    <GeoJSON
+                        key={random}
+                        data={featureCollection}
+                        onEachFeature={this.eachFeature}
+                        style={this.style}
+                    />
                 </Map>
                 <div className="svgviewer__btn-group">
                     <SvgButton disabled={selectedCount < 2} onClick={actions.union}>Union</SvgButton>

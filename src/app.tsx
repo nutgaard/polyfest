@@ -16,8 +16,8 @@ interface State {
     featureCollection: FeatureCollection | null;
 }
 
-function generateId(feature: JsonFeature, index: number): string {
-    return `${index}-${JSON.stringify(feature.geometry.coordinates)}`;
+function generateId(index: number): string {
+    return `${index}`;
 }
 
 class App extends React.Component<{}, State> {
@@ -64,7 +64,7 @@ class App extends React.Component<{}, State> {
         const features: Feature[] = jsonFeatures
             .map((feature, index) => ({
                 ...feature,
-                id: generateId(feature, index),
+                id: generateId(index),
                 isSelected: false,
                 color: colors[index]
             }));
