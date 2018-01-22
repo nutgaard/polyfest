@@ -1,7 +1,6 @@
 import * as greinerHormann from 'greiner-hormann';
 import { PolygonOperations } from './polygonoperation';
-import { Feature, Geometry } from '../domain';
-import { Operation } from '2d-polygon-boolean';
+import { Feature, Geometry, Operation } from '../domain';
 
 function isSelfclosing(numbers: number[][]): boolean {
     const first = numbers[0];

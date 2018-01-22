@@ -4,7 +4,7 @@ export interface FeatureProperties {
     isSelected?: boolean;
     color?: Color;
 }
-
+export type Operation = 'and' | 'or';
 export type Geometry = GeoJSON.Polygon;
 export type FeatureCollection = GeoJSON.FeatureCollection<Geometry, FeatureProperties>;
 export type Feature = GeoJSON.Feature<Geometry, FeatureProperties>;
