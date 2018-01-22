@@ -8,5 +8,5 @@ export function createBrowserBackend() {
 }
 
 export function createServerBackend() {
-    return new Backend(new Filestorage(), new PolygonJsImpl());
+    return new Backend(new Filestorage('./geojson.json'), new PolygonJsImpl());
 }

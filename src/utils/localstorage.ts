@@ -7,10 +7,6 @@ class Localstorage implements ParsedStorage {
         this.scope = scope;
     }
 
-    clear(): void {
-        window.localStorage.removeItem(this.scope);
-    }
-
     get(): object | null {
         const item: string | null = window.localStorage.getItem(this.scope);
         if (item === null) {

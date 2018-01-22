@@ -1,16 +1,25 @@
+import * as fs from 'fs';
 import ParsedStorage from './parsedstorage';
 
 class Filestorage implements ParsedStorage {
-    clear(): void {
-        console.log('clear'); // tslint:disable-line
-    }
+    file: string;
 
+    constructor(file: string) {
+        this.file = file;
+
+    }
     get(): object | null {
-        return null;
+        if (!fs.existsSync(this.file)) {
+            return null;
+        }
+
+        const content: string = fs.readFileSync(this.file, 'utf-8');
+        return JSON.parse(content);
     }
 
     set(data: object): void {
-        console.log('set'); // tslint:disable-line
+        const content: string = JSON.stringify(data, null, 2);
+        fs.writeFileSync(this.file, content, 'utf-8');
     }
 }
 
