@@ -14,6 +14,10 @@ Install dependencies
 ```
 yarn
 ```
+Or 
+```
+npm i
+```
 
 The application can start in dev-mode, or standard-mode.
 In dev-mode the api, and backend are inlined into the frontend allowing for fast iteration without restarting/redeploying servers.
