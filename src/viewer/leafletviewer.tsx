@@ -1,9 +1,9 @@
 import * as React from 'react';
+import * as Leaflet from 'leaflet';
 import { Layer, StyleFunction } from 'leaflet';
-import { GeoJSON, Map, TileLayer } from 'react-leaflet';
+import { GeoJSON, GeoJSONProps, Map, MapProps, TileLayer } from 'react-leaflet';
 import SvgButton from './svg-button';
-import { Coordinate, Feature, FeatureCollection, SvgViewbox } from '../domain';
-import { findViewbox, paddViewbox } from './svgutils';
+import { Feature, FeatureCollection } from '../domain';
 import { numberOfSelectedPolygons } from '../utils/domainutils';
 import 'leaflet/dist/leaflet.css';
 import './leafletviewer.css';
@@ -22,17 +22,12 @@ function getFeatureColor(feature: Feature): string {
 }
 
 class LeafletViewer extends React.Component<LeafletViewerProps, {}> {
-    viewbox: SvgViewbox | null = null;
+    map: Map<MapProps, Leaflet.Map> | null = null;
 
-    componentWillUpdate(nextProps: LeafletViewerProps) {
-        const { featureCollection } = nextProps;
-        if (featureCollection !== null && this.viewbox === null) {
-            const coordinates: Coordinate[] = featureCollection.features
-                .map((feature) => feature.geometry ? feature.geometry.coordinates[0] : [])
-                .reduce((list, element) => [...list, ...element], []);
-
-            const viewbox: SvgViewbox = findViewbox(coordinates);
-            this.viewbox = paddViewbox(viewbox, 0.2);
+    mapRef = (ref: Map<MapProps, Leaflet.Map> | null) => this.map = ref;
+    geoRef = (ref: GeoJSON<GeoJSONProps, Leaflet.GeoJSON> | null) => {
+        if (ref !== null && this.map !== null) {
+            this.map.leafletElement.fitBounds(ref.leafletElement.getBounds());
         }
     }
 
@@ -55,7 +50,7 @@ class LeafletViewer extends React.Component<LeafletViewerProps, {}> {
 
     render() {
         const { featureCollection, actions } = this.props;
-        if (featureCollection === null || this.viewbox === null) {
+        if (featureCollection === null) {
             return (
                 <svg viewBox="0 0 100 100">
                     <text x="50" y="40" textAnchor="middle" fontSize={12}>No polygons found</text>
@@ -65,15 +60,11 @@ class LeafletViewer extends React.Component<LeafletViewerProps, {}> {
 
         const random: string = ('' + Math.random());
 
-        const position: [number, number] = [
-            this.viewbox.miny + this.viewbox.height / 2,
-            this.viewbox.minx + this.viewbox.width / 2
-        ];
         const selectedCount = numberOfSelectedPolygons(featureCollection);
 
         return (
             <div className="leafletviewer">
-                <Map center={position} zoom={14}>
+                <Map ref={this.mapRef}>
                     <TileLayer
                         attribution="OSM"
                         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -83,6 +74,7 @@ class LeafletViewer extends React.Component<LeafletViewerProps, {}> {
                         data={featureCollection}
                         onEachFeature={this.eachFeature}
                         style={this.style}
+                        ref={this.geoRef}
                     />
                 </Map>
                 <div className="svgviewer__btn-group">
