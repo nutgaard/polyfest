@@ -3,7 +3,7 @@
 Simple view/editor of GeoJSON based on create-react-app (CRA).
 See [CRA-documentation](README-CRA.md)
 
-[DEMO](nutgaard.github.io/polyfest) 
+[DEMO](https://nutgaard.github.io/polyfest) 
 The demo is a bundled version in dev-mode, and uses `localStorage` as its persistence-layer.
 
 ### Start it
