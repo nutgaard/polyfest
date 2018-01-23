@@ -1,21 +1,18 @@
-.svgviewer {
+.leafletviewer {
     position: relative;
-    background-color: #fff;
     border: 1px solid #ccc;
     border-radius: 4px;
+    width: 100%;
+    height: 100%;
 }
 
+.leaflet-container {
+    height: 100%;
+    width: 100%;
+}
 .svgviewer__btn-group {
     position: absolute;
     z-index: 9990;
     top: 0;
     right: 0;
-}
-
-.svgviewer .btn:first-child {
-    border-radius: 0 0 0 4px;
-}
-
-.svgviewer .btn:last-child {
-    border-radius: 0 4px 0 0;
 }

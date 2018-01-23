@@ -6,13 +6,14 @@ import Aside from './components/aside';
 import Footer from './components/footer';
 import Fragment from './components/fragment';
 import { fetchFeatureCollection, intersectionOfPolygons, unionOfPolygons, updateFeatureCollection } from './api';
-import SvgViewer from './viewer/svgviewer';
+import DebugViewer from './viewer/debugviewer';
 import createColorScheme from './utils/color';
 import { numberOfSelectedPolygons, selectedPolygonIds } from './utils/domainutils';
 import LeafletViewer from './viewer/leafletviewer';
 import { Feature, FeatureCollection, FeatureProperties } from './domain';
 import { executeOperation, PolygonOperations } from './polygonoperations/polygonoperation';
-import GreinerHormannImpl from './polygonoperations/greiner-hormann-impl';
+// import OperationsImpl from './polygonoperations/greiner-hormann-impl';
+import OperationsImpl from './polygonoperations/polybooljs-impl';
 
 interface State {
     featureCollection: FeatureCollection | null;
@@ -22,7 +23,7 @@ function generateId(index: number): string {
     return `${index}`;
 }
 
-const operations: PolygonOperations = new GreinerHormannImpl();
+const operations: PolygonOperations = new OperationsImpl();
 
 function _execOperation(collection: FeatureCollection | null,
                         operation: (subject: Feature, clip: Feature) => Feature[]): Promise<FeatureCollection> {
@@ -83,6 +84,10 @@ class App extends React.Component<{}, State> {
         _execOperation(this.state.featureCollection, operation).then(this.processState);
     }
 
+    update = (geojson: FeatureCollection) => {
+        updateFeatureCollection(geojson).then(this.processState);
+    }
+
     processState = (jsonFeatureCollection: FeatureCollection) => {
         const jsonFeatures: Feature[] = jsonFeatureCollection.features;
 
@@ -109,7 +114,8 @@ class App extends React.Component<{}, State> {
     render() {
         const actions = {
             union: this.union,
-            intersect: this.intersect
+            intersect: this.intersect,
+            update: this.update
         };
         return (
             <Fragment>
@@ -122,9 +128,8 @@ class App extends React.Component<{}, State> {
                     />
                 </Main>
                 <Aside>
-                    <SvgViewer
+                    <DebugViewer
                         featureCollection={this.state.featureCollection}
-                        toggleFeatureSelection={this.toggleFeatureSelection}
                         actions={actions}
                     />
                 </Aside>

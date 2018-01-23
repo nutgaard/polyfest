@@ -1,11 +1,12 @@
 import * as React from 'react';
+import { Layer, StyleFunction } from 'leaflet';
 import { GeoJSON, Map, TileLayer } from 'react-leaflet';
-import 'leaflet/dist/leaflet.css';
+import SvgButton from './svg-button';
 import { Coordinate, Feature, FeatureCollection, SvgViewbox } from '../domain';
 import { findViewbox, paddViewbox } from './svgutils';
 import { numberOfSelectedPolygons } from '../utils/domainutils';
-import SvgButton from './svg-button';
-import { Layer, StyleFunction } from 'leaflet';
+import 'leaflet/dist/leaflet.css';
+import './leafletviewer.css';
 
 type LeafletViewerProps = {
     featureCollection: FeatureCollection | null;
