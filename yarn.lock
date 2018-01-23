@@ -2624,9 +2624,9 @@ gaze@^0.5.1:
   dependencies:
     globule "~0.1.0"
 
-geojson-validation@^0.2.0:
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/geojson-validation/-/geojson-validation-0.2.0.tgz#0ebc6701d2d4d4f35e56cd8f51aae5c2bab5f05a"
+geojson-validation-es5@^0.2.1:
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/geojson-validation-es5/-/geojson-validation-es5-0.2.1.tgz#b9c16da21f079e9a1a2c1183c373daa55e181b9d"
 
 get-caller-file@^1.0.1:
   version "1.0.2"

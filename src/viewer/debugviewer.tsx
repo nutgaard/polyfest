@@ -1,5 +1,5 @@
 import * as React from 'react';
-import * as geojsonValidator from 'geojson-validation';
+import * as geojsonValidator from 'geojson-validation-es5';
 import { FormEvent } from 'react';
 import { FeatureCollection } from '../domain';
 import './debugviewer.css';

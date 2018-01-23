@@ -2,7 +2,7 @@ import * as express from 'express';
 import * as morgan from 'morgan';
 import * as cors from 'cors';
 import * as bodyParser from 'body-parser';
-import * as geojsonValidator from 'geojson-validation';
+import * as geojsonValidator from 'geojson-validation-es5';
 import Backend from './backend/backend';
 import { createServerBackend } from './backend/backend-factory';
 import { FeatureCollection } from './domain';

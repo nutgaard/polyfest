@@ -22,7 +22,7 @@
     "cors": "^2.8.4",
     "express": "^4.16.2",
     "fetch-mock": "^5.12.2",
-    "geojson-validation": "^0.2.0",
+    "geojson-validation-es5": "^0.2.1",
     "greiner-hormann": "^1.3.4",
     "leaflet": "^1.3.1",
     "morgan": "^1.9.0",

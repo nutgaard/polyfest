@@ -1,3 +1,3 @@
-declare module 'geojson-validation' {
+declare module 'geojson-validation-es5' {
     export function valid(data: object): boolean;
 }
